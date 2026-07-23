@@ -6,19 +6,25 @@ on:
       - main
     paths:
       - "docs-site/**"
-      - "docs/external/**"
       - ".github/workflows/deploy-docs.yml"
   # 手動実行も可能
   workflow_dispatch:
 
-# GitHub Pages への書き込み権限を付与
+# GitHub Pages へのデプロイに必要な権限
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時デプロイを防ぐ（進行中のデプロイはキャンセルしない）
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  # ビルドジョブ
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,10 +43,19 @@ jobs:
       - name: Build VitePress docs
         run: npm run docs:build
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs-site/.vitepress/dist
-          # カスタムドメインを使用しない場合は不要
-          # cname: docs.example.com
+          path: docs-site/.vitepress/dist
+
+  # デプロイジョブ
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        id: deployment

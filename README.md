@@ -52,25 +52,30 @@ npm run docs:build
 npm run docs:preview
 ```
 
-### 5. GitHub Pages へ公開（手動デプロイ）
+### 5. GitHub Actions で自動デプロイ
 
-```bash
-# ビルド
-npm run docs:build
+ワークフローファイル [`.github/workflows/deploy-docs.yml`](./.github/workflows/deploy-docs.yml) がすでに配置されています。
+`main` ブランチへのプッシュ時（または手動実行時）に自動でビルド・GitHub Pages へデプロイします。
 
-# dist フォルダの内容を gh-pages ブランチへプッシュ
-cd docs-site/.vitepress/dist
-git init
-git add -A
-git commit -m "docs: deploy"
-git push -f https://github.com/baann1000p-debug/stock-trading-support-tool-design-external.git main:gh-pages
+#### ワークフローの動作
+
+| トリガー | 条件 |
+|---|---|
+| `push` 自動実行 | `docs-site/**` または `.github/workflows/deploy-docs.yml` の変更時 |
+| `workflow_dispatch` | GitHub 画面から手動実行 |
+
+#### GitHub リポジトリ側の設定（初回のみ）
+
+GitHub Pages を有効にするため、以下の手順を一度実施してください。
+
+1. リポジトリの **Settings** → **Pages** を開く
+2. **Source** を **`GitHub Actions`** に設定して **Save**
+
+#### 公開 URL
+
 ```
-
-公開 URL: `https://baann1000p-debug.github.io/stock-trading-support-tool/`
-
-### 6. GitHub Actions で自動デプロイ（推奨）
-
-`.github/workflows/` に CI/CD ワークフローを配置することで、`main` ブランチへのプッシュ時に自動でビルド・デプロイできます。
+https://baann1000p-debug.github.io/stock-trading-support-tool/
+```
 
 ---
 
