@@ -1,0 +1,14 @@
+{
+  "name": "investment-support-project-docs",
+  "version": "1.0.0",
+  "description": "Investment decision support tool - External specification documents site",
+  "scripts": {
+    "docs:dev": "vitepress dev docs-site",
+    "docs:build": "vitepress build docs-site",
+    "docs:preview": "vitepress preview docs-site"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4",
+    "vitepress-plugin-mermaid": "^2.0.17"
+  }
+}
