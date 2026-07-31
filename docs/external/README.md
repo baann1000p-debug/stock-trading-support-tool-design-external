@@ -10,10 +10,10 @@
 
 | ドキュメント   | ファイル名                                                                                                                         | 概要・対象読者                                                                                                                                                                                          |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **システム概要書 (図解版)** | [00_system_overview.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/external/00_system_overview.md) | システムの目的、全体アーキテクチャ、投資判断ライフサイクル、画面構成、買い環境スコア/出口シグナル判定ロジック、ER図をMermaid図入りでわかりやすく解説しています。 |
-| **機能仕様書 (詳細版)** | [01_functional_spec.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/external/01_functional_spec.md) | システムの目的、全体機能一覧、各画面の入出力仕様、バッチワークフロー、リスク管理シグナル判定ロジック、外部連携仕様、非機能要件などを網羅的に解説しています。                                            |
-| **メール受信・取引注文運用手順書** | [02_email_order_manual.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/external/02_email_order_manual.md) | 自動AI投資アドバイスメールを受信し、個人の証券口座で注文を発注・手仕舞いしてから、約定結果をアプリへ登録するまでの実務運用手順を解説しています。 |
-| **Web UI画面操作手順書** | [03_web_ui_manual.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/external/03_web_ui_manual.md)         | ログイン後のWebダッシュボード各画面の具体的なUI操作手順（ポジションサイジング、トレーリングストップ、テクニカルチャート分析、投資日記等）を掲載しています。 |
+| **システム概要書 (図解版)** | [00_system_overview.md](./00_system_overview.md) | システムの目的、全体アーキテクチャ、投資判断ライフサイクル、画面構成、買い環境スコア/出口シグナル判定ロジック、ER図をMermaid図入りでわかりやすく解説しています。 |
+| **機能仕様書 (詳細版)** | [01_functional_spec.md](./01_functional_spec.md) | システムの目的、全体機能一覧、各画面の入出力仕様、バッチワークフロー、リスク管理シグナル判定ロジック、外部連携仕様、非機能要件などを網羅的に解説しています。                                            |
+| **メール受信・取引注文運用手順書** | [02_email_order_manual.md](./02_email_order_manual.md) | 自動AI投資アドバイスメールを受信し、個人の証券口座で注文を発注・手仕舞いしてから、約定結果をアプリへ登録するまでの実務運用手順を解説しています。 |
+| **Web UI画面操作手順書** | [03_web_ui_manual.md](./03_web_ui_manual.md)         | ログイン後のWebダッシュボード各画面の具体的なUI操作手順（ポジションサイジング、トレーリングストップ、テクニカルチャート分析、投資日記等）を掲載しています。 |
 
 ---
 
@@ -51,7 +51,7 @@ npm run docs:dev
 
 エディタ内で直接 Markdown ファイルをレンダリングして確認することも可能です。
 
-1. 閲覧したいドキュメントファイル（[01_functional_spec.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/external/01_functional_spec.md) や [03_web_ui_manual.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/external/03_web_ui_manual.md)）を開きます。
+1. 閲覧したいドキュメントファイル（[01_functional_spec.md](./01_functional_spec.md) や [03_web_ui_manual.md](./03_web_ui_manual.md)）を開きます。
 2. キーボードショートカットを押してプレビューを表示します：
    - **Windows**: `Ctrl + Shift + V` （または `Ctrl + K` の後に `V`）
    - **Mac**: `Cmd + Shift + V`
@@ -103,17 +103,17 @@ npm run workflow:recommend
 npm run test-workflow -- --mode recommend
 ```
 
-> **詳細な操作手順**: 各画面の詳細な使い方や画面のスクリーンショットは [03_web_ui_manual.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/external/03_web_ui_manual.md) を参照してください。
+> **詳細な操作手順**: 各画面の詳細な使い方や画面のスクリーンショットは [03_web_ui_manual.md](./03_web_ui_manual.md) を参照してください。
 
 ---
 
-## 🔗 関連内部ドキュメント
+## 📌 内部設計書 (Design Documents) への参照
 
-開発者・保守担当者向けの内部構造・詳細設計ドキュメントは [docs/design/](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/design) に配置されています。
+開発者・保守担当者向けの内部構造・詳細設計ドキュメントは [docs/design/](../design/) に配置されています。
 
-- [01_system-overview.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/design/01_system-overview.md): システム全体アーキテクチャ・モジュール構造
-- [02_module-design.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/design/02_module-design.md): 詳細モジュール・ロジック設計
-- [03_data-design.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/design/03_data-design.md): データベース・テーブルスキーマ設計
-- [04_operation.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/design/04_operation.md): 運用・デプロイ設計
-- [05_api-spec.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/design/05_api-spec.md): バックエンド API エンドポイント詳細
-- [06_screen-spec.md](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/design/06_screen-spec.md): 画面 UI/UX 内部仕様
+- [01_system-overview.md](../design/01_system-overview.md): システム全体アーキテクチャ・モジュール構造
+- [02_module-design.md](../design/02_module-design.md): 詳細モジュール・ロジック設計
+- [03_data-design.md](../design/03_data-design.md): データベース・テーブルスキーマ設計
+- [04_operation.md](../design/04_operation.md): 運用・デプロイ設計
+- [05_api-spec.md](../design/05_api-spec.md): バックエンド API エンドポイント詳細
+- [06_screen-spec.md](../design/06_screen-spec.md): 画面 UI/UX 内部仕様

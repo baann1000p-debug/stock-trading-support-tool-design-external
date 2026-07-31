@@ -342,12 +342,12 @@ erDiagram
 
 各画面の入出力パラメータの詳細や、具体的なセットアップ手順については以下のドキュメントを参照してください。
 
-- **[外部機能仕様書 (詳細版)](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/external/01_functional_spec.md)**
+- **[外部機能仕様書 (詳細版)](./01_functional_spec.md)**
   - APIエンドポイント仕様、画面コンポーネント詳細、例外処理・非機能要件
-- **[メール受信・取引注文運用手順書](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/external/02_email_order_manual.md)**
-- **[Web UI画面操作手順書](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/external/03_web_ui_manual.md)**
+- **[メール受信・取引注文運用手順書](./02_email_order_manual.md)**
+- **[Web UI画面操作手順書](./03_web_ui_manual.md)**
   - Web UIのセットアップ・ログイン手順、買い環境スコアの見方、取引メモ・投資日記の使い方、トラブルシューティング
-- **[GitHub リポジトリトップ README](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/README.md)**
+- **[GitHub リポジトリトップ README](../../README.md)**
   - インストール、動作環境、環境変数設定など
 
 ---
