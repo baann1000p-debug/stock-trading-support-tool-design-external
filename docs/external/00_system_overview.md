@@ -419,7 +419,7 @@ erDiagram
 - **[メール受信・取引注文運用手順書](./02_email_order_manual.md)**
 - **[Web UI画面操作手順書](./03_web_ui_manual.md)**
   - Web UIのセットアップ・ログイン手順、買い環境スコアの見方、取引メモ・投資日記の使い方、トラブルシューティング
-- **[GitHub リポジトリトップ README](../../README.md)**
+- **[GitHub リポジトリトップ README](https://github.com/baann1000p-debug/stock-trading-support-tool-design-external/blob/main/README.md)**
   - インストール、動作環境、環境変数設定など
 
 ---
