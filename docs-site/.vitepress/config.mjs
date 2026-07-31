@@ -4,7 +4,7 @@ import { withMermaid } from "vitepress-plugin-mermaid";
 export default withMermaid(
   defineConfig({
     // サイト基本設定
-    base: "/stock-trading-support-tool/",
+    base: "/stock-trading-support-tool-design-external/",
     lang: "ja",
     title: "投資判断支援ツール",
     description:
@@ -44,7 +44,7 @@ export default withMermaid(
       // 編集リンク
       editLink: {
         pattern:
-          "https://github.com/baann1000p-debug/stock-trading-support-tool/edit/main/docs/external/:path",
+          "https://github.com/baann1000p-debug/stock-trading-support-tool-design-external/edit/main/docs/external/:path",
         text: "GitHub でこのページを編集",
       },
 
@@ -57,7 +57,7 @@ export default withMermaid(
       socialLinks: [
         {
           icon: "github",
-          link: "https://github.com/baann1000p-debug/stock-trading-support-tool",
+          link: "https://github.com/baann1000p-debug/stock-trading-support-tool-design-external",
         },
       ],
 
