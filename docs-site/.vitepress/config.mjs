@@ -18,7 +18,6 @@ export default withMermaid(
     rewrites: {
       "00_system_overview.md": "system-overview.md",
       "01_functional_spec.md": "functional-spec.md",
-      "02_user_manual.md": "user-manual.md",
       "02_email_order_manual.md": "email-order-manual.md",
       "03_web_ui_manual.md": "web-ui-manual.md",
     },
@@ -32,7 +31,7 @@ export default withMermaid(
         { text: "ホーム", link: "/" },
         { text: "システム概要", link: "/system-overview" },
         { text: "機能仕様書", link: "/functional-spec" },
-        { text: "操作手順書", link: "/user-manual" },
+        { text: "操作手順書", link: "/web-ui-manual" },
       ],
 
       sidebar: [
@@ -50,7 +49,6 @@ export default withMermaid(
         {
           text: "操作・運用手順書",
           items: [
-            { text: "操作手順書", link: "/user-manual" },
             { text: "Web UI画面操作手順書", link: "/web-ui-manual" },
             {
               text: "メール受信・取引注文運用手順書",

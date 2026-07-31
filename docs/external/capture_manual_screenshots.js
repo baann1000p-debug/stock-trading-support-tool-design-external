@@ -2,10 +2,50 @@ const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
 
+// DBに直接テスト用売却履歴を挿入するためのモジュール取得
+let dbHelpers = null;
+try {
+  dbHelpers = require('../../src/workflow/core/db.js');
+} catch (e) {
+  console.log('db.js module require note:', e.message);
+}
+
 async function captureScreenshots() {
   const outputDir = path.join(__dirname, 'images');
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
+  }
+
+  // DBシードの直接実行
+  if (dbHelpers && dbHelpers.getUserByUsername) {
+    try {
+      const user = await dbHelpers.getUserByUsername('manual_user');
+      if (user) {
+        const today = new Date().toISOString().split('T')[0];
+        const recResult = await dbHelpers.addCustomRecommendation(
+          '7203.T',
+          'トヨタ自動車',
+          2500,
+          2500,
+          100,
+          'テストエントリー',
+          today,
+          '景気敏感',
+          user.id,
+          'BUY'
+        );
+        console.log('addCustomRecommendation result:', recResult);
+
+        const recs = await dbHelpers.getAllRecommendations(user.id);
+        if (recs && recs.length > 0) {
+          const targetRec = recs.find((r) => r.ticker === '7203.T') || recs[0];
+          const sellRes = await dbHelpers.sellRecommendation(targetRec.id, 50, 2750, user.id, today);
+          console.log('🎉 Successfully seeded test trade via DB helpers!', sellRes);
+        }
+      }
+    } catch (e) {
+      console.log('Direct DB seeding error:', e.message);
+    }
   }
 
   const browser = await chromium.launch({ headless: true });
@@ -56,6 +96,55 @@ async function captureScreenshots() {
       await page.waitForTimeout(3000);
     } else {
       console.log('Already logged in, bypassing login form fill.');
+    }
+
+    // 各種モーダル撮影で必要な「エントリー中銘柄」および「売却履歴」をAPI経由で事前にデータ追加しておく
+    try {
+      console.log('Seeding initial trade and recommendation data via API...');
+      await page.evaluate(async () => {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        
+        // 1. エントリー追加
+        const addRes = await fetch('/api/recommendations/custom', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            ticker: '7203.T',
+            entryPrice: 2500,
+            quantity: 100,
+            recommendationType: 'BUY',
+            entryDate: new Date().toISOString().split('T')[0],
+            memo: 'テスト用エントリー'
+          })
+        });
+        
+        if (addRes.ok) {
+          const resData = await addRes.json();
+          const itemId = resData.id || (resData.item && resData.item.id);
+          if (itemId) {
+            // 2. 追加した銘柄の一部を売却して確定取引履歴(Trade)を作成
+            await fetch(`/api/recommendations/${itemId}/sell`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                quantity: 50,
+                price: 2750,
+                sellDate: new Date().toISOString().split('T')[0]
+              })
+            });
+          }
+        }
+      });
+      await page.waitForTimeout(1000);
+    } catch (e) {
+      console.log('Data seeding failed:', e.message);
     }
 
     // 02. ダッシュボード画面
@@ -122,12 +211,13 @@ async function captureScreenshots() {
         await closeModal();
       }
 
-      // 02. ポジションサイジング計算モーダル (PositionSizingModal)
-      const calcBtn = page.locator('button:has-text("ポジションサイズ計算"), button:has-text("ポジションサイジング")').first();
-      if (await calcBtn.count() > 0) {
-        console.log('Capturing modal_02_position_sizing.png & 03b_position_sizing_modal.png...');
-        await calcBtn.click({ force: true });
-        await page.waitForTimeout(1500);
+      // 06. ポジションサイジング・意思決定メモ登録モーダル (MemoModal)
+      const entryBtn = page.locator('button.entry-btn, button:has-text("エントリー")').filter({ hasText: 'エントリー' }).first();
+      if (await entryBtn.count() > 0 && await entryBtn.isVisible()) {
+        console.log('Capturing modal_06_memo.png & modal_02_position_sizing.png...');
+        await entryBtn.click({ force: true });
+        await page.waitForTimeout(2000);
+        await page.screenshot({ path: path.join(outputDir, 'modal_06_memo.png') });
         await page.screenshot({ path: path.join(outputDir, 'modal_02_position_sizing.png') });
         await page.screenshot({ path: path.join(outputDir, '03b_position_sizing_modal.png') });
         await closeModal();
@@ -168,22 +258,52 @@ async function captureScreenshots() {
 
       // 04. 手動銘柄追加モーダル (AddCustomStockModal)
       const addStockBtn = page.locator('button:has-text("銘柄を手動追加"), button:has-text("手動追加")').first();
-      if (await addStockBtn.count() > 0) {
+      if (await addStockBtn.count() > 0 && await addStockBtn.isVisible()) {
         console.log('Capturing modal_04_add_custom_stock.png...');
         await addStockBtn.click({ force: true });
         await page.waitForTimeout(1500);
         await page.screenshot({ path: path.join(outputDir, 'modal_04_add_custom_stock.png') });
-        await closeModal();
+        
+        // 確実に入力して登録
+        const tickerInput = page.locator('#modal-ticker-input');
+        if (await tickerInput.count() > 0 && await tickerInput.isVisible()) {
+          await tickerInput.fill('7203.T');
+          await page.fill('#modal-entry-price-input', '2500');
+          const submitAddBtn = page.locator('button[type="submit"].submit-btn, form button[type="submit"]').first();
+          if (await submitAddBtn.count() > 0) {
+            await submitAddBtn.click({ force: true });
+            await page.waitForTimeout(2000);
+          } else {
+            await closeModal();
+          }
+        } else {
+          await closeModal();
+        }
       }
 
       // 05. 売却決済モーダル (SellModal)
       const sellBtn = page.locator('button:has-text("売却"), button:has-text("決済")').first();
-      if (await sellBtn.count() > 0) {
+      if (await sellBtn.count() > 0 && await sellBtn.isVisible()) {
         console.log('Capturing modal_05_sell.png...');
         await sellBtn.click({ force: true });
         await page.waitForTimeout(1500);
         await page.screenshot({ path: path.join(outputDir, 'modal_05_sell.png') });
-        await closeModal();
+        
+        // 売却を確定させて DB に確定損益・取引履歴を作成
+        const sellQtyInput = page.locator('#sell-quantity-input');
+        if (await sellQtyInput.count() > 0 && await sellQtyInput.isVisible()) {
+          await sellQtyInput.fill('100');
+          await page.fill('#sell-price-input', '2700');
+          const submitSellBtn = page.locator('button[type="submit"].submit-btn, form button[type="submit"]').first();
+          if (await submitSellBtn.count() > 0) {
+            await submitSellBtn.click({ force: true });
+            await page.waitForTimeout(2000);
+          } else {
+            await closeModal();
+          }
+        } else {
+          await closeModal();
+        }
       }
     }
 
@@ -209,14 +329,41 @@ async function captureScreenshots() {
     console.log('Navigating to 運営状況 / 運用状況...');
     const tradeNav = page.locator('.nav-btn:has-text("運営状況"), .nav-btn:has-text("運用状況")').first();
     if (await tradeNav.count() > 0) {
+      // 売却履歴データが無い場合に備えて API 経由でテスト売却履歴データを登録
+      try {
+        await page.evaluate(async () => {
+          const token = localStorage.getItem('token');
+          await fetch('/api/trades', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+              ticker: '7203.T',
+              name: 'トヨタ自動車',
+              trade_type: 'BUY',
+              entry_price: 2500,
+              sell_price: 2750,
+              quantity: 100,
+              realized_pnl: 25000,
+              memo: '検証用売却メモ',
+              sold_at: new Date().toISOString()
+            })
+          });
+        });
+      } catch (e) {
+        console.log('Failed to seed trade data:', e.message);
+      }
+
       await tradeNav.click();
       await page.waitForTimeout(3000);
       console.log('Capturing 06_trade_journal.png...');
       await page.screenshot({ path: path.join(outputDir, '06_trade_journal.png') });
 
       // 06. 意思決定ログ（メモ）編集モーダル (MemoModal)
-      const memoBtn = page.locator('.memo-edit-btn, button:has-text("メモ"), button:has-text("編集")').first();
-      if (await memoBtn.count() > 0) {
+      const memoBtn = page.locator('.memo-edit-btn, button:has-text("メモ")').first();
+      if (await memoBtn.count() > 0 && await memoBtn.isVisible()) {
         console.log('Capturing modal_06_memo.png...');
         await memoBtn.click({ force: true });
         await page.waitForTimeout(1500);
@@ -225,11 +372,24 @@ async function captureScreenshots() {
       }
 
       // 09. 取引履歴編集モーダル (TradeEditModal)
-      const editBtn = page.locator('button:has-text("編集"), .edit-btn').last();
-      if (await editBtn.count() > 0) {
-        console.log('Capturing modal_09_trade_edit.png...');
-        await editBtn.click({ force: true });
+      // テーブル一覧モードに切り替える
+      const tableToggleBtn = page.locator('button:has-text("一覧表")').first();
+      console.log('tableToggleBtn count:', await tableToggleBtn.count());
+      if (await tableToggleBtn.count() > 0 && await tableToggleBtn.isVisible()) {
+        console.log('Clicking 一覧表 toggle button...');
+        await tableToggleBtn.click({ force: true });
         await page.waitForTimeout(1500);
+      }
+
+      const tradeRow = page.locator('.data-table tbody tr').first();
+      console.log('tradeRow count:', await tradeRow.count());
+      if (await tradeRow.count() > 0) {
+        console.log('tradeRow isVisible:', await tradeRow.isVisible());
+      }
+      if (await tradeRow.count() > 0 && await tradeRow.isVisible()) {
+        console.log('Capturing modal_09_trade_edit.png...');
+        await tradeRow.click({ force: true });
+        await page.waitForTimeout(2000);
         await page.screenshot({ path: path.join(outputDir, 'modal_09_trade_edit.png') });
         await closeModal();
       }

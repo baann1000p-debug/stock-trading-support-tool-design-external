@@ -14,7 +14,7 @@ hero:
       link: /functional-spec
     - theme: alt
       text: 操作手順書を読む
-      link: /user-manual
+      link: /web-ui-manual
 
 features:
   - icon: 📊
@@ -53,6 +53,6 @@ features:
 
 [システム概要仕様書を見る →](./system-overview)
 [機能仕様書を見る →](./functional-spec)
-[操作手順書を見る →](./user-manual)
+[操作手順書を見る →](./web-ui-manual)
 [Web UI画面操作手順書を見る →](./web-ui-manual)
 [メール受信・取引注文運用手順書を見る →](./email-order-manual)
