@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "docs-site/**"
+      - "docs/external/**"
       - ".github/workflows/deploy-docs.yml"
   # 手動実行も可能
   workflow_dispatch:

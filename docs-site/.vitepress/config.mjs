@@ -10,6 +10,19 @@ export default withMermaid(
     description:
       "個人投資家向け投資判断支援ツール (Investment Decision Support Tool) の外部仕様書・操作手順書",
 
+    // docs/external を唯一のソースとし、docs-site 側にコンテンツを二重管理しない
+    srcDir: "../docs/external",
+    srcExclude: ["README.md", "capture_manual_screenshots.js"],
+
+    // 番号プレフィックス付きのファイル名を読みやすいURLに変換
+    rewrites: {
+      "00_system_overview.md": "system-overview.md",
+      "01_functional_spec.md": "functional-spec.md",
+      "02_user_manual.md": "user-manual.md",
+      "02_email_order_manual.md": "email-order-manual.md",
+      "03_web_ui_manual.md": "web-ui-manual.md",
+    },
+
     // ヘッダーナビ
     themeConfig: {
       logo: "📊",
