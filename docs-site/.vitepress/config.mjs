@@ -17,6 +17,7 @@ export default withMermaid(
 
       nav: [
         { text: "ホーム", link: "/" },
+        { text: "システム概要", link: "/system-overview" },
         { text: "機能仕様書", link: "/functional-spec" },
         { text: "操作手順書", link: "/user-manual" },
       ],
@@ -27,10 +28,21 @@ export default withMermaid(
           items: [{ text: "トップページ", link: "/" }],
         },
         {
-          text: "ドキュメント",
+          text: "仕様書",
           items: [
+            { text: "システム概要仕様書", link: "/system-overview" },
             { text: "外部機能仕様書", link: "/functional-spec" },
+          ],
+        },
+        {
+          text: "操作・運用手順書",
+          items: [
             { text: "操作手順書", link: "/user-manual" },
+            { text: "Web UI画面操作手順書", link: "/web-ui-manual" },
+            {
+              text: "メール受信・取引注文運用手順書",
+              link: "/email-order-manual",
+            },
           ],
         },
       ],
@@ -89,5 +101,8 @@ export default withMermaid(
 
     // 最終更新日を有効化
     lastUpdated: true,
+
+    // ローカル開発用URLへの言及をデッドリンク判定から除外
+    ignoreDeadLinks: [/^http:\/\/localhost/],
   }),
 );

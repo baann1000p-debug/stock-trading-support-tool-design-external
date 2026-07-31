@@ -43,7 +43,7 @@ npm run dev
 1. Webブラウザ（Google Chrome / Microsoft Edge 等）を起動し、[http://localhost:5173](http://localhost:5173) へアクセスします。
 2. ログイン画面が表示されます。
 
-![ログイン画面イメージ](file:///c:/Users/b17g0013/Documents/GitHub/stock-trading-support-tool/docs/external/01_functional_spec.md)
+![ログイン画面イメージ](./images/01_login.png)
 
 3. 2.1 で作成した **ユーザー名** と **パスワード** を入力し、「ログイン」ボタンをクリックします。
 4. 認証が成功すると、ダッシュボード画面へ移動します。

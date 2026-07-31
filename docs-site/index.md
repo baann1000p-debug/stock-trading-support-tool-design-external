@@ -7,6 +7,9 @@ hero:
   tagline: データとAIに基づいた客観的・体系的な投資判断をサポートします。マクロ経済分析からポジション管理まで一貫して支援。
   actions:
     - theme: brand
+      text: システム概要を読む
+      link: /system-overview
+    - theme: alt
       text: 機能仕様書を読む
       link: /functional-spec
     - theme: alt
@@ -48,5 +51,8 @@ features:
 | AI エンジン | Google Gemini API / Claude API |
 | 認証 | JWT (JSON Web Token) |
 
+[システム概要仕様書を見る →](./system-overview)
 [機能仕様書を見る →](./functional-spec)
 [操作手順書を見る →](./user-manual)
+[Web UI画面操作手順書を見る →](./web-ui-manual)
+[メール受信・取引注文運用手順書を見る →](./email-order-manual)
